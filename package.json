@@ -1,0 +1,27 @@
+{
+  "name": "coomap",
+  "version": "0.1.0",
+  "description": "多人协作地图",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qiqingjin/cooMap.git"
+  },
+  "keywords": [
+    "地图arcgis"
+  ],
+  "author": "liyueyang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/qiqingjin/cooMap/issues"
+  },
+  "homepage": "https://github.com/qiqingjin/cooMap#readme",
+  "dependencies": {
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "express-ejs-layouts": "^2.3.1"
+  }
+}

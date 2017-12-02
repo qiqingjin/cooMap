@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>多人协作地图</title>
+    <style>
+    	html, body, #viewContainer {
+		    padding: 0;
+		    margin: 0;
+		    height: 100%;
+		    width: 100%;
+		}
+    </style>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.5/esri/css/main.css" />
+    <script src="https://js.arcgis.com/4.5/"></script>
+    <script>
+    	require([
+			"esri/Map",
+			"esri/views/MapView",
+			"dojo/domReady!"
+		], function(Map, MapView) {
+		    var map = new Map({
+		        basemap: "streets"
+		    });
+		    var view = new MapView({
+		        container: "viewContainer",  // Reference to the DOM node that will contain the view
+		        map: map               // References the map object created in step 3
+		    });
+		});
+    </script>
+</head>
+<body>
+	<%- defineContent('userPage') %>
+	<div id="viewContainer"></div>
+</body>
+</html>
