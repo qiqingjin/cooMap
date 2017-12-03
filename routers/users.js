@@ -2,15 +2,15 @@
 * @Author: claireyyli
 * @Date:   2017-12-02 13:16:06
 * @Last Modified by:   claireyyli
-* @Last Modified time: 2017-12-03 16:56:49
+* @Last Modified time: 2017-12-03 20:56:47
 */
-const express = require("express");
-const router = express.Router();
-const fs = require('fs');
-const defaultExtent = '{}';
+var express = require("express");
+var router = express.Router();
+var fs = require('fs');
+var defaultExtent = {"extent":{"xmin":-9176063.047064926,"ymin":4245763.007332374,"xmax":-9175182.826911155,"ymax":4246624.118229077,"spatialReference":{"wkid":102100}},"eid":0};
 
 router.get("/:name", function(req, res){
-	const extent = JSON.parse(fs.readFileSync('./public/data/extent.json')) || defaultExtent;
+	var extent = JSON.parse(fs.readFileSync('./public/data/extent.json')) || defaultExtent;
 	console.log('========extent read========', extent);
     res.render("users",{
         name: req.params.name,
