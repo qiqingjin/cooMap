@@ -2,14 +2,13 @@
 * @Author: claireyyli
 * @Date:   2017-12-02 12:57:50
 * @Last Modified by:   claireyyli
-* @Last Modified time: 2017-12-03 15:18:17
+* @Last Modified time: 2017-12-03 16:55:49
 */
 // dependencies
 const path = require("path");
 const express = require("express");
 const expressLayouts = require('express-ejs-layouts');
 const bodyParser = require('body-parser');
-//const multer = require('multer');
 const app = express();
 
 // routers
