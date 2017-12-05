@@ -2,4 +2,15 @@
 <h1><%= name.toUpperCase() %></h1>
 <link rel="stylesheet" type="text/css" href="../css/users.css">
 <div id="extent" data-extent="<%= extent %>" display="none"></div>
+<div id="line-button" class="esri-widget-button esri-widget esri-interactive" title="Draw polyline">
+	<span class="esri-icon-polyline"></span>
+</div>
+<div id="draw-polygon" class="esri-widget-button esri-widget esri-interactive" title="Draw and measure polygon">
+	<span class="esri-icon-polygon"></span>
+</div>
+<div id="draw-redo" class="esri-widget-button esri-widget esri-interactive" title="Clear line and polygon">
+	<span class="esri-icon-rotate"></span>
+</div>
+<script type="text/javascript" src="../js/drawPolyline.js"></script>
+<script type="text/javascript" src="../js/drawPolygon.js"></script>
 <script type="text/javascript" src="../js/users.js"></script>

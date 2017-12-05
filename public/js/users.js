@@ -2,7 +2,7 @@
 * @Author: claireyyli
 * @Date:   2017-12-02 15:43:32
 * @Last Modified by:   claireyyli
-* @Last Modified time: 2017-12-03 23:33:33
+* @Last Modified time: 2017-12-05 07:40:11
 */
 window.onload = function(){
 	window.SOCKET = window.SOCKET || io();
@@ -10,30 +10,65 @@ window.onload = function(){
 		"esri/Map",
 		"esri/views/MapView",
 	    "esri/geometry/Extent",
-	    "esri/core/watchUtils", 
+	    "esri/core/watchUtils",
+      	"esri/views/2d/draw/Draw",
+      	"esri/Graphic",
+      	"esri/geometry/Polyline",
+      	"esri/geometry/Polygon",
+     	"esri/geometry/geometryEngine",
+     	"esri/layers/GraphicsLayer",
 		"dojo/domReady!"
-	], function(Map, MapView, Extent, watchUtils) {
+	], function(Map, MapView, Extent, watchUtils, Draw, Graphic, Polyline, Polygon, geometryEngine, GraphicsLayer) {
 		var map = new Map({
 			basemap: "hybrid"
 		});
-		var clientExtentObj = JSON.parse(document.getElementById('extent').dataset.extent);
+		window.CLIENT.clientExtentObj = JSON.parse(document.getElementById('extent').dataset.extent);
 		var view = new MapView({
 			container: "viewContainer",
 			map: map,
-			extent: clientExtentObj
+			extent: window.CLIENT.clientExtentObj
 		});
-		window.SOCKET.on('server extent change', function(serverExtentMsg){
-      		var serverExtentObj = JSON.parse(serverExtentMsg);
-      		var clientExtentMsg = JSON.stringify(clientExtentObj);
-      		if(serverExtentMsg !== clientExtentMsg){
-      			view.extent = new Extent(serverExtentObj);
-      			clientExtentObj = serverExtentObj;
-      		}
-      	});
+		var mapSocket = new MapSocket();
+		var graphicsLayer = new GraphicsLayer({graphics: []});
+		graphicsLayer.graphics.add(new Graphic({}));
+
+		view.ui.add("line-button", "top-left");
+		view.ui.add("draw-polygon", "top-left");
+		view.ui.add("draw-redo", "top-left");
+
+		view.then(function(evt) {
+	        var draw = new Draw({
+	          	view: view
+	        });
+	        var drawLineButton = document.getElementById("line-button");
+	        var drawPolygonButton = document.getElementById("draw-polygon");
+	        var drawRedoButton = document.getElementById("draw-redo");
+
+			mapSocket.updateExtent(view, Extent);
+
+	        drawLineButton.addEventListener("click", function() {
+	        	graphicsLayer.graphics.removeAll();	          	
+	          	enableCreateLine(draw, view, Draw, Graphic, Polyline, geometryEngine, graphicsLayer);
+	          	map.add(graphicsLayer);
+	        });
+	        drawPolygonButton.addEventListener("click", function() {
+	        	graphicsLayer.graphics.removeAll();
+	          	enableCreatePolygon(draw, view, Graphic, Polygon, geometryEngine, graphicsLayer);
+	          	map.add(graphicsLayer);
+	        });
+	        drawRedoButton.addEventListener("click", function(){
+	          	view.graphics.removeAll();
+	        });
+	    });
+	    
 	    watchUtils.whenTrue(view, "stationary", function() {
 	        if (view.extent) {
 	          	window.SOCKET.emit('client extent change', JSON.stringify(view.extent) );
 	        }
+	    });
+	    map.allLayers.on("change", function(e){
+	    	mapSocket.updateLine(Graphic, view);
+	    	mapSocket.updatePolygon(Graphic, Polygon, view);
 	    });
 	});
 }
