@@ -2,7 +2,7 @@
 * @Author: claireyyli
 * @Date:   2017-12-02 12:57:50
 * @Last Modified by:   claireyyli
-* @Last Modified time: 2017-12-05 07:19:08
+* @Last Modified time: 2017-12-05 18:15:03
 */
 // dependencies
 var path = require("path");
@@ -64,6 +64,24 @@ io.sockets.on('connection', function(socket) {
         fs.writeFileSync( './public/data/polygon.json', clientPolygonMsg );
         console.log('---------write polygon----');
         socket.broadcast.emit('server polygon change', clientPolygonMsg);
+      }
+  });
+
+  socket.on('client point change', function(clientPointMsg){
+    var serverPointMsg = fs.readFileSync('./public/data/point.json');
+      if( clientPointMsg !== serverPointMsg ){
+        fs.writeFileSync( './public/data/point.json', clientPointMsg );
+        console.log('---------write point----');
+        socket.broadcast.emit('server point change', clientPointMsg);
+      }
+  });
+
+  socket.on('client layer change', function(clientLayerMsg){
+    var serverLayerMsg = fs.readFileSync('./public/data/layer.json');
+      if( clientLayerMsg !== serverLayerMsg ){
+        fs.writeFileSync( './public/data/layer.json', clientLayerMsg );
+        console.log('---------write layer----', serverLayerMsg, clientLayerMsg);
+        socket.broadcast.emit('server layer change', clientLayerMsg);
       }
   });
 
