@@ -1,8 +1,8 @@
 /*
 * @Author: claireyyli
 * @Date:   2017-12-02 15:43:32
-* @Last Modified by:   claireyyli
-* @Last Modified time: 2017-12-05 19:31:22
+* @Last Modified by:   Administrator
+* @Last Modified time: 2017-12-06 08:37:25
 */
 window.onload = function(){
 	window.SOCKET = window.SOCKET || io();
@@ -31,9 +31,7 @@ window.onload = function(){
 		});
 		var mapSocket = new MapSocket();
 		var graphicsLayer = new GraphicsLayer({graphics: []});
-		var featureLayerDraw = null;
-		var featureLayerOther = null;
-		var featureLayer = null;
+
 		graphicsLayer.graphics.add(new Graphic({}));
 
 		view.ui.add("line-button", "top-left");
@@ -69,7 +67,7 @@ window.onload = function(){
 	        drawRedoButton.addEventListener("click", function(){
 	          	view.graphics.removeAll();
 	          	graphicsLayer.graphics.removeAll();
-	          	featureLayer && map.remove(featureLayer);
+	          	map.removeAll();
 	          	window.SOCKET.emit('client layer change', JSON.stringify({}) );
 	        });
 	        drawPointButton.addEventListener("click", function(){
@@ -79,7 +77,7 @@ window.onload = function(){
 	        	map.add(graphicsLayer);
 	        });
 	        drawLayerButton.addEventListener("click", function(){
-	        	featureLayer = createLayer(map, featureLayer, FeatureLayer);
+	        	createLayer(map, FeatureLayer);
 	        });
 	    });
 	    
@@ -92,7 +90,7 @@ window.onload = function(){
 	    	mapSocket.updateLine(Graphic, view);
 	    	mapSocket.updatePolygon(Graphic, Polygon, view);
 	    	mapSocket.updatePoint(Graphic, view);
-	    	featureLayer = mapSocket.updateLayer(map, featureLayer, FeatureLayer);
+	    	mapSocket.updateLayer(map, FeatureLayer);
 	    });
 		
 	});

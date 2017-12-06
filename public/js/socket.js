@@ -1,8 +1,8 @@
 /*
 * @Author: claireyyli
 * @Date:   2017-12-03 18:37:55
-* @Last Modified by:   claireyyli
-* @Last Modified time: 2017-12-05 19:09:54
+* @Last Modified by:   Administrator
+* @Last Modified time: 2017-12-06 08:19:01
 */
 window.SOCKET = window.SOCKET || io();
 
@@ -60,25 +60,26 @@ MapSocket.prototype.updatePoint = function(Graphic, view){
 	});
 }
 
-MapSocket.prototype.updateLayer = function(map, layer, FeatureLayer){
+MapSocket.prototype.updateLayer = function(map, FeatureLayer){
 	console.log('--------updateLayer');
-	var featureLayer = layer || null;
+	var featureLayer =  null;
 	window.SOCKET.on('server layer change', function(serverLayerMsg){
 		var serverLayerObj = JSON.parse(serverLayerMsg);
-		var clientLayerMsg = JSON.stringify(window.CLIENT.clientLayerObj);
 		
-		if(serverLayerMsg !== clientLayerMsg && serverLayerObj.url && !featureLayer){
+		if(serverLayerObj.url){
 			featureLayer = new FeatureLayer({
 		      	url: serverLayerObj.url
 		    });
 		    map.add(featureLayer);
-		    window.CLIENT.clientLayerObj = serverLayerObj;
+
+		    //window.CLIENT.otherFeatureLayer = window.CLIENT.otherFeatureLayer ? window.CLIENT.otherFeatureLayer.push(featureLayer) : [featureLayer];
 		}else{
-			map.remove(featureLayer);
+			map.removeAll();
+			//window.CLIENT.otherFeatureLayer = [];
 		}
 
 	});
-	return featureLayer;
+
 }
 
 function createPolylineGraphic(vertices, Graphic, view){

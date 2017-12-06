@@ -1,8 +1,8 @@
 /*
 * @Author: claireyyli
 * @Date:   2017-12-02 12:57:50
-* @Last Modified by:   claireyyli
-* @Last Modified time: 2017-12-05 18:15:03
+* @Last Modified by:   Administrator
+* @Last Modified time: 2017-12-06 00:20:29
 */
 // dependencies
 var path = require("path");
@@ -80,7 +80,7 @@ io.sockets.on('connection', function(socket) {
     var serverLayerMsg = fs.readFileSync('./public/data/layer.json');
       if( clientLayerMsg !== serverLayerMsg ){
         fs.writeFileSync( './public/data/layer.json', clientLayerMsg );
-        console.log('---------write layer----', serverLayerMsg, clientLayerMsg);
+        console.log('---------write layer----');
         socket.broadcast.emit('server layer change', clientLayerMsg);
       }
   });
