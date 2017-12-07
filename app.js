@@ -2,7 +2,7 @@
 * @Author: claireyyli
 * @Date:   2017-12-02 12:57:50
 * @Last Modified by:   Administrator
-* @Last Modified time: 2017-12-07 16:00:54
+* @Last Modified time: 2017-12-07 20:48:27
 */
 // dependencies
 var path = require("path");
@@ -41,15 +41,24 @@ var pointArr = JSON.parse(fs.readFileSync('./data/point.json'));
 var lineArr = JSON.parse(fs.readFileSync('./data/line.json'));
 var polygonArr = JSON.parse(fs.readFileSync('./data/polygon.json'));
 var layerArr = JSON.parse(fs.readFileSync('./data/layer.json'));
+var chatInfo = '';
+var userNum = 0;
 
 io.sockets.on('connection', function(socket) {
-    console.log('-----------connect');
+    userNum++ ;
+    fs.writeFileSync( './data/chat.json', JSON.stringify({num: userNum}) );
+    console.log('-----------connect, current number of users is : ', userNum);
    
     var serverExtentMsg = '';
     var serverLineMsg = '';
     var serverPolygonMsg = '';
     var serverPointMsg = '';
     var serverLayerMsg = '';
+
+    socket.on('client user change', function(userName){
+        //console.log('-----client user change');
+        socket.broadcast.emit('server user change', userName + '.' + userNum);
+    });
 
     socket.on('client extent change', function(clientExtentMsg){
         serverExtentMsg = fs.readFileSync('./data/extent.json');
@@ -60,7 +69,7 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('client line change', function(clientLineMsg){
-        console.log('client line change');
+        //console.log('client line change');
         //var serverLineMsg = fs.readFileSync('./data/line.json');
         if(clientLineMsg !== '[]' && clientLineMsg.length > 0){
             lineArr = JSON.parse(fs.readFileSync('./data/line.json'));
@@ -107,7 +116,7 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('client point change', function(clientPointMsg){
-        console.log('client point change');
+        //console.log('client point change');
         //var serverPointMsg = fs.readFileSync('./data/point.json');
         if(clientPointMsg !== '[]' && clientPointMsg.length > 0){
             pointArr = JSON.parse(fs.readFileSync('./data/point.json'));
@@ -121,7 +130,7 @@ io.sockets.on('connection', function(socket) {
             !pointExit && pointArr.push(JSON.parse(clientPointMsg));
             !pointExit && fs.writeFileSync( './data/point.json', JSON.stringify(pointArr) );
         }else{
-            console.log('point is clear');
+            //console.log('point is clear');
             pointArr = [];
             fs.writeFileSync( './data/point.json', '[]' );
         }
@@ -132,7 +141,7 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('client layer change', function(clientLayerMsg){
-        console.log('client layer change');
+        //console.log('client layer change');
         //var serverLayerMsg = fs.readFileSync('./data/layer.json');
         if(clientLayerMsg !== '{}' && clientLayerMsg.length > 0){
             layerArr = JSON.parse(fs.readFileSync('./data/layer.json'));
@@ -146,7 +155,7 @@ io.sockets.on('connection', function(socket) {
             !layerExit && layerArr.push(JSON.parse(clientLayerMsg).url);
             !layerExit && fs.writeFileSync( './data/layer.json', JSON.stringify(layerArr) );
         }else{
-            console.log('layer is clear');
+            //console.log('layer is clear');
             layerArr = [];
             fs.writeFileSync( './data/layer.json', '[]' );
         }
@@ -154,6 +163,10 @@ io.sockets.on('connection', function(socket) {
         serverLayerMsg = clientLayerMsg;
         socket.broadcast.emit('server layer change', clientLayerMsg);
 
+    });
+
+    socket.on('client chat change', function(info){
+        socket.broadcast.emit('server chat change', info);
     });
 
     socket.on('client data clear', function(){
@@ -169,9 +182,11 @@ io.sockets.on('connection', function(socket) {
     })
 
     socket.on('disconnect', function(){
-        console.log('------------disconnect');
-        console.log('-----pointArr', pointArr);
-        console.log('------layerArr', layerArr);
+        userNum-- ;
+        fs.writeFileSync( './data/chat.json', JSON.stringify({num: userNum}) );
+        console.log('------------disconnect, current number of users is : ', userNum);
+        //console.log('-----pointArr', pointArr);
+        //console.log('------layerArr', layerArr);
 
         lineArr.length > 0 && fs.writeFileSync( './data/line.json', JSON.stringify(lineArr) );
         polygonArr.length > 0 && fs.writeFileSync( './data/polygon.json', JSON.stringify(polygonArr) );

@@ -2,7 +2,7 @@
 * @Author: claireyyli
 * @Date:   2017-12-02 15:43:32
 * @Last Modified by:   Administrator
-* @Last Modified time: 2017-12-07 13:55:46
+* @Last Modified time: 2017-12-07 19:52:24
 */
 require([
     "esri/Map",
@@ -36,7 +36,10 @@ require([
     var view = new MapView({
         container: "viewContainer",
         map: map,
-        extent: window.CLIENT.clientExtentObj
+        extent: window.CLIENT.clientExtentObj,
+        padding: {
+          right: 350
+        }
     });
 
     var mapSocket = new MapSocket();
@@ -68,8 +71,25 @@ require([
         var drawPolygonButton = document.getElementById("draw-polygon");
         var drawLayerButton = document.getElementById("draw-layer");
         var drawRedoButton = document.getElementById("draw-redo");
+        var outputMessages = document.getElementById("outputMessages");
+        var inputMessage = document.getElementById("inputMessage");
+        var sendMessage = document.getElementById("sendMessage");
+        var currentUsersNum = document.getElementById("currentUsersNum");
+        var currentUsersInfo = document.getElementById("currentUsersInfo");
 
         mapSocket.updateExtent(view, Extent);
+        mapSocket.updateChantInfo(outputMessages, util.displayMessage);
+        mapSocket.updateUserInfo(currentUsersInfo, currentUsersNum, util.displayMessageOneLine);
+
+        window.SOCKET.emit('client user change', document.getElementsByTagName('h1')[0].innerHTML);
+
+        sendMessage.addEventListener("click", function(){
+            var userName = document.getElementsByTagName('h1')[0].innerHTML;
+            var message = inputMessage.value;
+            var info = "<br> <span> " + userName + "</span> : " + message;
+            util.displayMessage(outputMessages, info);
+            window.SOCKET.emit('client chat change', info);
+        });
 
         drawLineButton.addEventListener("click", function() {
             //graphicsLayer.graphics.removeAll();

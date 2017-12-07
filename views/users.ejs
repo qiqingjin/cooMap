@@ -8,6 +8,16 @@
 <div id="polygon" data-polygon="<%= polygon %>" display="none"></div>
 <div id="layer" data-layer="<%= layer %>" display="none"></div>
 
+<div id="viewContainer">
+    <div id="outputMessages"></div>
+    <div id="currentUsersNum">online users: <span> <%= num %> </span> !</div>
+    <div id="currentUsersInfo"></div>
+    <div id="sendMessageContainer">
+        <input type="text" id="inputMessage">
+        <button id="sendMessage">send</button>
+    </div>
+</div>
+
 <div id="line-button" class="esri-widget-button esri-widget esri-interactive" title="Draw polyline">
     <span class="esri-icon-polyline"></span>
 </div>

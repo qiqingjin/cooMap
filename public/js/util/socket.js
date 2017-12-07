@@ -2,7 +2,7 @@
 * @Author: claireyyli
 * @Date:   2017-12-03 18:37:55
 * @Last Modified by:   Administrator
-* @Last Modified time: 2017-12-07 14:01:27
+* @Last Modified time: 2017-12-07 20:53:43
 */
 window.SOCKET = window.SOCKET || io();
 
@@ -20,7 +20,7 @@ MapSocket.prototype.updateExtent = function(view, Extent){
 };
 
 MapSocket.prototype.updateLine = function(Graphic, view, graphicsLayer){
-	console.log('--------updateLine');
+	//console.log('--------updateLine');
 	window.SOCKET.on('server line change', function(serverLineMsg){
 		var serverLineObj = JSON.parse(serverLineMsg);
 		var clientLineMsg = JSON.stringify(window.CLIENT.clientLineObj);
@@ -36,12 +36,12 @@ MapSocket.prototype.updateLine = function(Graphic, view, graphicsLayer){
 };
 
 MapSocket.prototype.updatePolygon = function(Graphic, Polygon, view, graphicsLayer){
-	console.log('--------updatePolygon');
+	//console.log('--------updatePolygon');
 	window.SOCKET.on('server polygon change', function(serverPolygonMsg){
 		var serverPolygonObj = JSON.parse(serverPolygonMsg);
 		var clientPolygonMsg = JSON.stringify(window.CLIENT.clientPolygonObj);
 		if(serverPolygonObj.length > 0 && clientPolygonMsg !== serverPolygonMsg){
-			console.log('-------server polygon change');
+			//console.log('-------server polygon change');
 			//view.graphics.removeAll();
 			createPolygonGraphic(serverPolygonObj, Graphic, Polygon, view);
 			//window.CLIENT.clientPolygonObj = window.CLIENT.clientPolygonObj ? window.CLIENT.clientPolygonObj.push(serverPolygonObj) : [serverPolygonObj];
@@ -53,12 +53,12 @@ MapSocket.prototype.updatePolygon = function(Graphic, Polygon, view, graphicsLay
 }
 
 MapSocket.prototype.updatePoint = function(Graphic, view, graphicsLayer){
-	console.log('--------updatePolygon');
+	//console.log('--------updatePolygon');
 	window.SOCKET.on('server point change', function(serverPointMsg){
 		var serverPointObj = JSON.parse(serverPointMsg);
 		var clientPointMsg = JSON.stringify(window.CLIENT.clientPointObj);
 		if(serverPointObj.length > 0 && clientPointMsg !== serverPointMsg){
-			console.log('-------server point change');
+			//console.log('-------server point change');
 			//view.graphics.removeAll();
 			createPointGraphic(serverPointObj, Graphic, view);
 			//window.CLIENT.clientPointObj = window.CLIENT.clientPointObj ? window.CLIENT.clientPointObj.push(serverPointObj) : [serverPointObj];
@@ -70,7 +70,7 @@ MapSocket.prototype.updatePoint = function(Graphic, view, graphicsLayer){
 }
 
 MapSocket.prototype.updateLayer = function(map, FeatureLayer){
-	console.log('--------updateLayer');
+	//console.log('--------updateLayer');
 	var featureLayer =  null;
 	window.SOCKET.on('server layer change', function(serverLayerMsg){
 		var serverLayerObj = JSON.parse(serverLayerMsg);
@@ -103,6 +103,36 @@ MapSocket.prototype.updateLayer = function(map, FeatureLayer){
 
 	});
 
+}
+
+MapSocket.prototype.updateChantInfo = function(container, func){
+	window.SOCKET.on('server chat change', function(serverChantMsg){
+		func(container, serverChantMsg);
+	});
+}
+
+MapSocket.prototype.updateUserInfo = function(currentUsersInfo, currentUsersNum, func){
+	window.SOCKET.on('server user change', function(userInfo){
+		//console.log('====server user change=', userInfo);
+		var userName = userInfo.split('.')[0];
+		var userNum = userInfo.split('.')[1];
+		var numInfo = "online users: <span> " + userNum + "</span> !";
+		
+		func(currentUsersNum, numInfo);
+
+		var info = "<span> " + userName + "</span> log in !" ;
+		if(window.CLIENT.userNum > userNum){
+			info = "<span> " + userName + "</span> log off !" ;
+		}
+		currentUsersInfo.style.display = 'block';
+		func(currentUsersInfo, info);
+
+		window.CLIENT.userNum = userNum;
+
+		setTimeout(function(){
+			currentUsersInfo.style.display = 'none';
+		}, 10000);
+	});
 }
 
 function createPolylineGraphic(vertices, Graphic, view){
