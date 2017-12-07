@@ -5,24 +5,33 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>多人协作地图</title>
     <style>
-    	html, body{
-		    padding: 0;
-		    margin: 0;
-		    height: 100%;
-		    width: 100%;
-		}
+        html, body{
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
     </style>
     <link rel="stylesheet" href="https://js.arcgis.com/4.5/esri/css/main.css">
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script src="https://js.arcgis.com/4.5/"></script> 
     <script type="text/javascript">
+        window.SOCKET = window.SOCKET || io();
         window.CLIENT = window.CLIENT || {};
+        window.onbeforeunload = function(){
+            window.SOCKET.close();
+            var start = Date.now();
+            var end = Date.now();
+            while (end - start < 3000) {
+                end = Date.now();
+            }
+        }
     </script>
-    <script type="text/javascript" src="../js/socket.js"></script>
+    <script type="text/javascript" src="../js/util/socket.js"></script>
 </head>
 <body>
-	<%- defineContent('userPage') %>
-	<div id="viewContainer"></div>
-	<%- defineContent('indexPage') %>
+    <%- defineContent('userPage') %>
+    <div id="viewContainer"></div>
+    <%- defineContent('indexPage') %>
 </body>
 </html>

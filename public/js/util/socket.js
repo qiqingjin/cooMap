@@ -2,7 +2,7 @@
 * @Author: claireyyli
 * @Date:   2017-12-03 18:37:55
 * @Last Modified by:   Administrator
-* @Last Modified time: 2017-12-06 08:19:01
+* @Last Modified time: 2017-12-07 14:01:27
 */
 window.SOCKET = window.SOCKET || io();
 
@@ -19,43 +19,52 @@ MapSocket.prototype.updateExtent = function(view, Extent){
 	});
 };
 
-MapSocket.prototype.updateLine = function(Graphic, view){
+MapSocket.prototype.updateLine = function(Graphic, view, graphicsLayer){
 	console.log('--------updateLine');
 	window.SOCKET.on('server line change', function(serverLineMsg){
 		var serverLineObj = JSON.parse(serverLineMsg);
 		var clientLineMsg = JSON.stringify(window.CLIENT.clientLineObj);
-		if(serverLineMsg !== clientLineMsg){
-			view.graphics.removeAll();
+		if(serverLineObj.length > 0 && clientLineMsg !== serverLineMsg){
+			//view.graphics.removeAll();
 			createPolylineGraphic(serverLineObj, Graphic, view);
-			window.CLIENT.clientLineObj = serverLineObj;
+			//window.CLIENT.clientLineObj = window.CLIENT.clientLineObj ? window.CLIENT.clientLineObj.push(serverLineObj) : [serverLineObj];
+		}else{
+			view.graphics.removeAll();
+			graphicsLayer.graphics.removeAll();
 		}
 	});
 };
 
-MapSocket.prototype.updatePolygon = function(Graphic, Polygon, view){
+MapSocket.prototype.updatePolygon = function(Graphic, Polygon, view, graphicsLayer){
 	console.log('--------updatePolygon');
 	window.SOCKET.on('server polygon change', function(serverPolygonMsg){
 		var serverPolygonObj = JSON.parse(serverPolygonMsg);
 		var clientPolygonMsg = JSON.stringify(window.CLIENT.clientPolygonObj);
-		if(serverPolygonMsg !== clientPolygonMsg){
+		if(serverPolygonObj.length > 0 && clientPolygonMsg !== serverPolygonMsg){
 			console.log('-------server polygon change');
-			view.graphics.removeAll();
+			//view.graphics.removeAll();
 			createPolygonGraphic(serverPolygonObj, Graphic, Polygon, view);
-			window.CLIENT.clientPolygonObj = serverPolygonObj;
+			//window.CLIENT.clientPolygonObj = window.CLIENT.clientPolygonObj ? window.CLIENT.clientPolygonObj.push(serverPolygonObj) : [serverPolygonObj];
+		}else{
+			view.graphics.removeAll();
+			graphicsLayer.graphics.removeAll();
 		}
 	});
 }
 
-MapSocket.prototype.updatePoint = function(Graphic, view){
+MapSocket.prototype.updatePoint = function(Graphic, view, graphicsLayer){
 	console.log('--------updatePolygon');
 	window.SOCKET.on('server point change', function(serverPointMsg){
 		var serverPointObj = JSON.parse(serverPointMsg);
 		var clientPointMsg = JSON.stringify(window.CLIENT.clientPointObj);
-		if(serverPointMsg !== clientPointMsg){
+		if(serverPointObj.length > 0 && clientPointMsg !== serverPointMsg){
 			console.log('-------server point change');
-			view.graphics.removeAll();
+			//view.graphics.removeAll();
 			createPointGraphic(serverPointObj, Graphic, view);
-			window.CLIENT.clientPointObj = serverPointObj;
+			//window.CLIENT.clientPointObj = window.CLIENT.clientPointObj ? window.CLIENT.clientPointObj.push(serverPointObj) : [serverPointObj];
+		}else{
+			view.graphics.removeAll();
+			graphicsLayer.graphics.removeAll();
 		}
 	});
 }
@@ -65,6 +74,18 @@ MapSocket.prototype.updateLayer = function(map, FeatureLayer){
 	var featureLayer =  null;
 	window.SOCKET.on('server layer change', function(serverLayerMsg){
 		var serverLayerObj = JSON.parse(serverLayerMsg);
+		var exitLayer = false;
+
+		for(key in window.CLIENT.featureLayerUrlArr){
+			if(window.CLIENT.featureLayerUrlArr[key] === serverLayerObj.url){
+				exitLayer = true;
+				break;
+			}
+		}
+
+		if(exitLayer){
+			return ;
+		}
 		
 		if(serverLayerObj.url){
 			featureLayer = new FeatureLayer({
@@ -72,10 +93,12 @@ MapSocket.prototype.updateLayer = function(map, FeatureLayer){
 		    });
 		    map.add(featureLayer);
 
-		    //window.CLIENT.otherFeatureLayer = window.CLIENT.otherFeatureLayer ? window.CLIENT.otherFeatureLayer.push(featureLayer) : [featureLayer];
+		    window.CLIENT.featureLayerArr.push(featureLayer);
+		    window.CLIENT.featureLayerUrlArr.push(serverLayerObj.url);
 		}else{
-			map.removeAll();
-			//window.CLIENT.otherFeatureLayer = [];
+			window.CLIENT.featureLayerArr && map.removeMany(window.CLIENT.featureLayerArr);
+			window.CLIENT.featureLayerArr = [];
+            window.CLIENT.featureLayerUrlArr = [];
 		}
 
 	});
@@ -83,7 +106,7 @@ MapSocket.prototype.updateLayer = function(map, FeatureLayer){
 }
 
 function createPolylineGraphic(vertices, Graphic, view){
-	view.graphics.removeAll();
+	//view.graphics.removeAll();
 	var polyline = {
 	type: "polyline", // autocasts as Polyline
 	paths: vertices,
@@ -94,7 +117,7 @@ function createPolylineGraphic(vertices, Graphic, view){
 	geometry: polyline,
 	symbol: {
 	  type: "simple-line", // autocasts as SimpleLineSymbol
-	  color: [255, 99, 71],
+	  color: [138, 43, 226],
 	  width: 2,
 	  cap: "round",
 	  join: "round"
@@ -112,7 +135,7 @@ function createPolygonGraphic(vertices, Graphic, Polygon, view){
       geometry: polygon,
       	symbol: {
         type: "simple-fill", // autocasts as SimpleFillSymbol
-        color: [255, 99, 71, 0.8],
+        color: [138, 43, 226],
         style: "solid",
         outline: { // autocasts as SimpleLineSymbol
           color: [255, 255, 255],
@@ -136,7 +159,7 @@ function createPointGraphic(coordinates, Graphic, view){
 	    symbol: {
 	      type: "simple-marker", // autocasts as SimpleMarkerSymbol
 	      style: "round",
-	      color: [255, 215, 0],
+	      color: [138, 43, 226],
 	      size: "16px",
 	      outline: { // autocasts as SimpleLineSymbol
 	        color: [255, 255, 255],

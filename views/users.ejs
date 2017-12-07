@@ -3,25 +3,27 @@
 <link rel="stylesheet" type="text/css" href="../css/users.css">
 
 <div id="extent" data-extent="<%= extent %>" display="none"></div>
+<div id="point" data-point="<%= point %>" display="none"></div>
+<div id="line" data-line="<%= line %>" display="none"></div>
+<div id="polygon" data-polygon="<%= polygon %>" display="none"></div>
+<div id="layer" data-layer="<%= layer %>" display="none"></div>
 
 <div id="line-button" class="esri-widget-button esri-widget esri-interactive" title="Draw polyline">
-	<span class="esri-icon-polyline"></span>
+    <span class="esri-icon-polyline"></span>
 </div>
 <div id="draw-polygon" class="esri-widget-button esri-widget esri-interactive" title="Draw polygon">
-	<span class="esri-icon-polygon"></span>
+    <span class="esri-icon-polygon"></span>
 </div>
 <div id="draw-point" class="esri-widget-button esri-widget esri-interactive" title="Draw point">
-	<span class="icon-point"></span>
+    <span class="icon-point"></span>
 </div>
 <div id="draw-layer" class="esri-widget-button esri-widget esri-interactive" title="Draw layer">
-	<span class="icon-layer"></span>
+    <span class="icon-layer"></span>
 </div>
 <div id="draw-redo" class="esri-widget-button esri-widget esri-interactive" title="Clear line, polygon and point">
-	<span class="esri-icon-rotate"></span>
+    <span class="esri-icon-rotate"></span>
 </div>
 
-<script type="text/javascript" src="../js/drawPoint.js"></script>
-<script type="text/javascript" src="../js/drawPolyline.js"></script>
-<script type="text/javascript" src="../js/drawPolygon.js"></script>
-<script type="text/javascript" src="../js/drawLayer.js"></script>
+<input type="text" placeholder="https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Landscape_Trees/FeatureServer/0" id="layer-service" title="Input the url of featurelayer service">
+
 <script type="text/javascript" src="../js/users.js"></script>
