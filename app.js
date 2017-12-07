@@ -2,7 +2,7 @@
 * @Author: claireyyli
 * @Date:   2017-12-02 12:57:50
 * @Last Modified by:   Administrator
-* @Last Modified time: 2017-12-07 20:48:27
+* @Last Modified time: 2017-12-07 22:20:35
 */
 // dependencies
 var path = require("path");
@@ -58,6 +58,11 @@ io.sockets.on('connection', function(socket) {
     socket.on('client user change', function(userName){
         //console.log('-----client user change');
         socket.broadcast.emit('server user change', userName + '.' + userNum);
+    });
+
+    socket.on('client user off', function(userName){
+        //console.log('-----client user change');
+        socket.broadcast.emit('server user change', userName + '.' + (userNum - 1) );
     });
 
     socket.on('client extent change', function(clientExtentMsg){

@@ -19,6 +19,7 @@
         window.SOCKET = window.SOCKET || io();
         window.CLIENT = window.CLIENT || {};
         window.onbeforeunload = function(){
+            window.SOCKET.emit('client user off', document.getElementsByTagName('h1')[0].innerHTML);
             window.SOCKET.close();
             var start = Date.now();
             var end = Date.now();
