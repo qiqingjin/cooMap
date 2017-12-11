@@ -2,7 +2,7 @@
 * @Author: claireyyli
 * @Date:   2017-12-05 11:22:55
 * @Last Modified by:   Administrator
-* @Last Modified time: 2017-12-07 11:58:04
+* @Last Modified time: 2017-12-10 17:36:38
 */
 
 define(function(){
@@ -10,6 +10,7 @@ define(function(){
         var action = draw.create("point");
 
         /*action.on("cursor-update", function (evt) {
+            layer.graphics.removeMany(layer.graphics.splice(layer.graphics.length -1, 1));
             createPointGraphic(evt.coordinates, view, layer, Graphic);
         });*/
 
@@ -18,7 +19,6 @@ define(function(){
         });
     }
     function createPointGraphic(coordinates, view, layer, Graphic){
-        //layer.graphics.removeMany(layer.graphics.splice(layer.graphics.length -1, 1));
 
         window.SOCKET.emit('client point change', JSON.stringify(coordinates) );
 

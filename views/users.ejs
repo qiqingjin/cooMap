@@ -1,6 +1,19 @@
 <%- contentFor('userPage') %>
-<h1><%= name.toUpperCase() %></h1>
 <link rel="stylesheet" type="text/css" href="../css/users.css">
+<script type="text/javascript">
+    window.SOCKET = window.SOCKET || io();
+    window.CLIENT = window.CLIENT || {};
+    window.onbeforeunload = function(){
+        window.SOCKET.emit('client user off', document.getElementsByTagName('h1')[0].innerHTML);
+        window.SOCKET.close();
+        var start = Date.now();
+        var end = Date.now();
+        while (end - start < 3000) {
+            end = Date.now();
+        }
+    }
+</script>
+<h1><%= name.toUpperCase() %></h1>
 
 <div id="extent" data-extent="<%= extent %>" display="none"></div>
 <div id="point" data-point="<%= point %>" display="none"></div>
@@ -10,7 +23,7 @@
 
 <div id="viewContainer">
     <div id="outputMessages"></div>
-    <div id="currentUsersNum">online users: <span> <%= num %> </span> !</div>
+    <div id="currentUsersNum"><!--online users: <span> <%= num %> </span> !--></div>
     <div id="currentUsersInfo"></div>
     <div id="sendMessageContainer">
         <input type="text" id="inputMessage">

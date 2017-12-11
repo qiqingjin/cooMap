@@ -2,7 +2,7 @@
 * @Author: claireyyli
 * @Date:   2017-12-02 13:16:06
 * @Last Modified by:   Administrator
-* @Last Modified time: 2017-12-07 20:42:51
+* @Last Modified time: 2017-12-10 17:10:02
 */
 var express = require("express");
 var router = express.Router();
@@ -15,7 +15,7 @@ router.get("/:name", function(req, res){
     var point = fs.readFileSync('./data/point.json');
     var polygon = fs.readFileSync('./data/polygon.json');
     var layer = fs.readFileSync('./data/layer.json');
-    var num = parseInt(JSON.parse(fs.readFileSync('./data/chat.json')).num) + 1;
+    var num = parseInt(JSON.parse(fs.readFileSync('./data/chat.json')).num);
 
     res.render("users",{
         name: req.params.name,

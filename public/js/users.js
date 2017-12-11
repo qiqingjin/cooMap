@@ -2,7 +2,7 @@
 * @Author: claireyyli
 * @Date:   2017-12-02 15:43:32
 * @Last Modified by:   Administrator
-* @Last Modified time: 2017-12-07 19:52:24
+* @Last Modified time: 2017-12-10 17:20:25
 */
 require([
     "esri/Map",

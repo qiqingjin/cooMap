@@ -2,7 +2,7 @@
 * @Author: claireyyli
 * @Date:   2017-12-03 18:37:55
 * @Last Modified by:   Administrator
-* @Last Modified time: 2017-12-07 20:53:43
+* @Last Modified time: 2017-12-10 17:28:56
 */
 window.SOCKET = window.SOCKET || io();
 
@@ -120,18 +120,19 @@ MapSocket.prototype.updateUserInfo = function(currentUsersInfo, currentUsersNum,
 		
 		func(currentUsersNum, numInfo);
 
-		var info = "<span> " + userName + "</span> log in !" ;
-		if(window.CLIENT.userNum > userNum){
-			info = "<span> " + userName + "</span> log off !" ;
+		if(document.getElementsByTagName('h1')[0].innerHTML !== userName){
+			var info = "<span> " + userName + "</span> log in !" ;
+			if(window.CLIENT.userNum > userNum){
+				info = "<span> " + userName + "</span> log off !" ;
+			}
+			currentUsersInfo.style.display = 'block';
+			func(currentUsersInfo, info);
+			setTimeout(function(){
+				currentUsersInfo.style.display = 'none';
+			}, 10000);
 		}
-		currentUsersInfo.style.display = 'block';
-		func(currentUsersInfo, info);
 
 		window.CLIENT.userNum = userNum;
-
-		setTimeout(function(){
-			currentUsersInfo.style.display = 'none';
-		}, 10000);
 	});
 }
 
